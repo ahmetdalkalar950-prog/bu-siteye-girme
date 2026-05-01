@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta id="theme-color" name="theme-color" content="#ffffff">
     <title>Sürpriz Sitesi</title>
     <style>
@@ -12,9 +13,15 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: 'Comic Sans MS', cursive; /* Troll havası için */
+            font-family: 'Comic Sans MS', cursive;
             background-color: white;
             overflow: hidden;
+            transition: background-color 0.1s;
+        }
+
+        #anaEkran {
+            text-align: center;
+            z-index: 10;
         }
 
         #trollButon {
@@ -33,22 +40,22 @@
             transform: translateY(4px);
         }
 
-        #mesaj {
-            margin-bottom: 20px;
-            font-size: 20px;
-        }
-
-        /* Nyan Cat GIF'i için gizli stil */
         #nyanCat {
             display: none;
             width: 300px;
+            z-index: 5;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
     <div id="anaEkran">
-        <p id="mesaj">Burada hiçbir şey yok... Sakın butona basma!</p>
+        <h1>Burada hiçbir şey yok... Sakın butona basma!</h1>
         <button id="trollButon" onclick="baslat()">BASMA!</button>
     </div>
 
@@ -61,16 +68,34 @@
     <script>
         const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
         let i = 0;
+        const nyanSes = document.getElementById("nyanSes");
+
+        // Senin istediğin dosya indirme fonksiyonu
+        function dosyaIndir() {
+            const metin = "RENKLERİ SEVİYORSUN DEMEK HA!";
+            const dosyaAdi = "RENKLER.txt";
+            
+            const blob = new Blob([metin], { type: "text/plain" });
+            const link = document.createElement("a");
+            
+            link.download = dosyaAdi;
+            link.href = window.URL.createObjectURL(blob);
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         function baslat() {
-            // Butonu ve mesajı gizle, kediyi göster
+            // Arayüzü değiştir
             document.getElementById('anaEkran').style.display = 'none';
             document.getElementById('nyanCat').style.display = 'block';
 
-            // Müziği çal
-            document.getElementById("nyanSes").play();
+            // Müziği başlat ve durmasını engelle
+            nyanSes.play();
+            nyanSes.onpause = () => nyanSes.play();
 
-            // Kaosu başlat!
+            // 1. Renkleri ve Tarayıcı Çubuğunu Değiştir
             setInterval(() => {
                 const currentColor = colors[i];
                 document.body.style.backgroundColor = currentColor;
@@ -78,7 +103,10 @@
                 i = (i + 1) % colors.length;
             }, 100);
 
-            // Başlık kaydırma efekti
+            // 2. Senin TXT Dosyalarını İndirmeye Başla (Her 3 saniyede bir)
+            setInterval(dosyaIndir, 3000);
+
+            // 3. Sekme Başlığını Kaydıran Mesaj
             let titleText = "NABER BURDAYIM BAK RENKLERİ SEVİYORMUSUN? ";
             setInterval(() => {
                 titleText = titleText.substring(1) + titleText.substring(0, 1);
