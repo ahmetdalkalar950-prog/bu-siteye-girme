@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta id="theme-color" name="theme-color" content="#ffffff">
+    <title>Sürpriz Sitesi</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Comic Sans MS', cursive; /* Troll havası için */
+            background-color: white;
+            overflow: hidden;
+        }
+
+        #trollButon {
+            padding: 20px 40px;
+            font-size: 25px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px #999;
+        }
+
+        #trollButon:active {
+            box-shadow: 0 2px #666;
+            transform: translateY(4px);
+        }
+
+        #mesaj {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        /* Nyan Cat GIF'i için gizli stil */
+        #nyanCat {
+            display: none;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="anaEkran">
+        <p id="mesaj">Burada hiçbir şey yok... Sakın butona basma!</p>
+        <button id="trollButon" onclick="baslat()">BASMA!</button>
+    </div>
+
+    <img id="nyanCat" src="https://media.giphy.com/media/sIIhZUs2lzDQc/giphy.gif" alt="Nyan Cat">
+
+    <audio id="nyanSes" loop>
+        <source src="https://www.myinstants.com/media/sounds/nyan-cat.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
+        let i = 0;
+
+        function baslat() {
+            // Butonu ve mesajı gizle, kediyi göster
+            document.getElementById('anaEkran').style.display = 'none';
+            document.getElementById('nyanCat').style.display = 'block';
+
+            // Müziği çal
+            document.getElementById("nyanSes").play();
+
+            // Kaosu başlat!
+            setInterval(() => {
+                const currentColor = colors[i];
+                document.body.style.backgroundColor = currentColor;
+                document.getElementById('theme-color').setAttribute('content', currentColor);
+                i = (i + 1) % colors.length;
+            }, 100);
+
+            // Başlık kaydırma efekti
+            let titleText = "NABER BURDAYIM BAK RENKLERİ SEVİYORMUSUN? ";
+            setInterval(() => {
+                titleText = titleText.substring(1) + titleText.substring(0, 1);
+                document.title = titleText;
+            }, 100);
+        }
+    </script>
+</body>
+</html>
