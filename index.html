@@ -19,6 +19,38 @@
             transition: background-color 0.1s;
         }
 
+        /* EKRAN SALLANMA EFEKTİ */
+        @keyframes earthquake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .shaking {
+            animation: earthquake 0.1s infinite;
+        }
+
+        /* ERROR PENCERELERİ STİLİ */
+        .error-popup {
+            position: absolute;
+            background: #f0f0f0;
+            border: 2px solid #000;
+            padding: 10px;
+            box-shadow: 5px 5px 0px #888;
+            z-index: 100;
+            pointer-events: none;
+            width: 200px;
+            text-align: center;
+        }
+
         #anaEkran {
             text-align: center;
             z-index: 10;
@@ -33,11 +65,6 @@
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 5px #999;
-        }
-
-        #trollButon:active {
-            box-shadow: 0 2px #666;
-            transform: translateY(4px);
         }
 
         #nyanCat {
@@ -70,32 +97,42 @@
         let i = 0;
         const nyanSes = document.getElementById("nyanSes");
 
-        // Senin istediğin dosya indirme fonksiyonu
         function dosyaIndir() {
             const metin = "RENKLERİ SEVİYORSUN DEMEK HA!";
-            const dosyaAdi = "RENKLER.txt";
-            
+            const dosyaAdi = "RENKLER_" + Math.floor(Math.random() * 100) + ".txt";
             const blob = new Blob([metin], { type: "text/plain" });
             const link = document.createElement("a");
-            
             link.download = dosyaAdi;
             link.href = window.URL.createObjectURL(blob);
-            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
+        // RASTGELE ERROR PENCERESİ OLUŞTURMA
+        function createError() {
+            const error = document.createElement('div');
+            error.className = 'error-popup';
+            error.innerHTML = "<b>SİSTEM HATASI!</b><br>RENK DOSYASI BULUNDU!";
+            error.style.left = Math.random() * (window.innerWidth - 200) + 'px';
+            error.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+            document.body.appendChild(error);
+            
+            // Ekran dolmasın diye 2 saniye sonra silinsin
+            setTimeout(() => error.remove(), 2000);
+        }
+
         function baslat() {
-            // Arayüzü değiştir
             document.getElementById('anaEkran').style.display = 'none';
             document.getElementById('nyanCat').style.display = 'block';
+            
+            // EKRAN SALLANMAYI BAŞLAT
+            document.body.classList.add('shaking');
 
-            // Müziği başlat ve durmasını engelle
             nyanSes.play();
             nyanSes.onpause = () => nyanSes.play();
 
-            // 1. Renkleri ve Tarayıcı Çubuğunu Değiştir
+            // 1. Renkler
             setInterval(() => {
                 const currentColor = colors[i];
                 document.body.style.backgroundColor = currentColor;
@@ -103,10 +140,13 @@
                 i = (i + 1) % colors.length;
             }, 100);
 
-            // 2. Senin TXT Dosyalarını İndirmeye Başla (Her 3 saniyede bir)
+            // 2. Dosya İndirme (3 saniyede bir)
             setInterval(dosyaIndir, 3000);
 
-            // 3. Sekme Başlığını Kaydıran Mesaj
+            // 3. Error Pencereleri (Yarım saniyede bir çıksın)
+            setInterval(createError, 500);
+
+            // 4. Sekme Başlığı
             let titleText = "NABER BURDAYIM BAK RENKLERİ SEVİYORMUSUN? ";
             setInterval(() => {
                 titleText = titleText.substring(1) + titleText.substring(0, 1);
